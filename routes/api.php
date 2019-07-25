@@ -13,6 +13,15 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
+Route::get('email/verify/{id}', [
+        'uses'=>'VerificationApiController@verify'
+])->name('verificationapi.verify');;
+Route::get('email/resend', [
+        'uses'=>'VerificationApiController@resend'
+]);
+Route::post('login', 'UsersApiController@login');
+Route::post('register', 'UsersApiController@register');
+Route::group(['middleware' => 'auth:api'], function(){
+Route::post('details', 'UsersApiController@details')->middleware('verified');
+}); // will work only when user has verified the email
